@@ -1,8 +1,9 @@
 package entity
 
 type Seat struct {
-	ProjectionId int  `json:"projectionId"`
-	RowNumber    int  `json:"rowNumber"`
-	ColumnNumber int  `json:"columnNumber"`
-	Occupied     bool `json:"occupied"`
+	ID            int64 `json:"id"`
+	ReservationId int64 `json:"projection"`
+	RowNumber     int64 `json:"rowNumber"`
+	ColumnNumber  int64 `json:"columnNumber"`
+	Occupied      bool  `json:"occupied"`
 }

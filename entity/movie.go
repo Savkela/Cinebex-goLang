@@ -1,8 +1,11 @@
 package entity
 
 type Movie struct {
-	Title         string `json:"title"`
-	OriginalTitle string `json:"originalTitle"`
-	Duration      string `json:"duration"`
-	ImageUrl      string `json:"imageUrl"`
+	ID            int64   `json:"id"`
+	Title         string  `json:"title"`
+	OriginalTitle string  `json:"originalTitle"`
+	Duration      string  `json:"duration"`
+	ImageUrl      string  `json:"imageUrl"`
+	GenreId       int64   `json:"genreId"`
+	Movies        []Movie `json:"movies"`
 }
