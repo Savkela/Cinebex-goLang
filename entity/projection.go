@@ -1,9 +1,13 @@
 package entity
 
+import "time"
+
 type Projection struct {
-	MovieId        int    `json:"movieId"`
-	Date           string `json:"date"`
-	Time           string `json:"time"`
-	TicketPrice    string `json:"ticketPrice"`
-	AvailableSeats string `json:"availableSeats"`
+	ID                  int64         `json:"id"`
+	MovieId             int64         `json:"movie" binding:"required"`
+	Date                time.Time     `json:"date"`
+	Time                time.Time     `json:"time"`
+	Price               float64       `json:"ticketPrice"`
+	TotalAvailableSeats int64         `json:"availableSeats"`
+	Reservations        []Reservation `json:"reservations"`
 }

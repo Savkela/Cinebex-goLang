@@ -28,7 +28,7 @@ func (c *controller) FindAll() []entity.Movie {
 
 func (c *controller) Save(ctx *gin.Context) entity.Movie {
 	var movie entity.Movie
-	ctx.BindJSON(&movie)
+	ctx.ShouldBindJSON(&movie)
 	c.service.Save(movie)
 	return movie
 }
