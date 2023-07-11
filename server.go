@@ -8,19 +8,31 @@ import (
 )
 
 var (
-	videoService    service.MovieService       = service.New()
-	videoController controller.MovieController = controller.New(videoService)
+	movieService    service.MovieService       = service.New()
+	movieController controller.MovieController = controller.New(movieService)
+
+	projectionService    service.ProjectionService       = service.NewProjectionService()
+	projectionController controller.ProjectionController = controller.NewProjectionController(projectionService)
 )
 
 func main() {
 	server := gin.Default()
 
 	server.GET("/movies", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.FindAll())
+		ctx.JSON(200, movieController.FindAll())
 	})
 
 	server.POST("/movies", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.Save(ctx))
+		ctx.JSON(200, movieController.Save(ctx))
+	})
+
+	server.GET("/projections", func(ctx *gin.Context) {
+		ctx.JSON(200, projectionController.FindAll())
+	})
+
+	server.POST("/projections", func(ctx *gin.Context) {
+		ctx.JSON(200, projectionController.Save(ctx))
+
 	})
 
 	server.Run(":8080")

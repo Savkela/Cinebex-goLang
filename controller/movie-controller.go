@@ -23,7 +23,7 @@ func New(service service.MovieService) MovieController {
 }
 
 func (c *controller) FindAll() []entity.Movie {
-	return service.New().FindAll()
+	return c.service.FindAll()
 }
 
 func (c *controller) Save(ctx *gin.Context) entity.Movie {
