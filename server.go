@@ -16,7 +16,9 @@ var (
 )
 
 func main() {
-	server := gin.Default()
+	server := gin.New()
+
+	server.Use(gin.Recovery(), gin.Logger(), gin.BasicAuth(gin.Accounts{"savic": "nikola"}))
 
 	server.GET("/movies", func(ctx *gin.Context) {
 		ctx.JSON(200, movieController.FindAll())

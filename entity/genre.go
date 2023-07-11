@@ -1,5 +1,7 @@
 package entity
 
 type Genre struct {
-	Name string `json:"title"`
+	ID     int64   `json:"id"`
+	Name   string  `json:"name"`
+	Movies []Movie `json:"movies"`
 }
