@@ -50,6 +50,14 @@ func main() {
 		ctx.JSON(200, movieController.Save(ctx))
 	})
 
+	server.GET("/movies/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, movieController.FindOne(ctx))
+	})
+
+	server.PUT("/movies/:id", movieController.Update)
+
+	server.DELETE("/movies/:id", movieController.Delete)
+
 	//projections
 	server.GET("/projections", func(ctx *gin.Context) {
 		ctx.JSON(200, projectionController.FindAll())
@@ -58,6 +66,14 @@ func main() {
 	server.POST("/projections", func(ctx *gin.Context) {
 		ctx.JSON(200, projectionController.Save(ctx))
 	})
+
+	server.GET("/projections/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, projectionController.FindOne(ctx))
+	})
+
+	server.PUT("/projections/:id", projectionController.Update)
+
+	server.DELETE("/projections/:id", projectionController.Delete)
 
 	//users
 	server.GET("/users", func(ctx *gin.Context) {
@@ -85,6 +101,14 @@ func main() {
 		ctx.JSON(200, genreController.Save(ctx))
 	})
 
+	server.GET("/genres/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, genreController.FindOne(ctx))
+	})
+
+	server.PUT("/genres/:id", genreController.Update)
+
+	server.DELETE("/genres/:id", genreController.Delete)
+
 	//reservations
 	server.GET("/reservations", func(ctx *gin.Context) {
 		ctx.JSON(200, reservationController.FindAll())
@@ -93,6 +117,14 @@ func main() {
 	server.POST("/reservations", func(ctx *gin.Context) {
 		ctx.JSON(200, reservationController.Save(ctx))
 	})
+
+	server.GET("/reservations/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, reservationController.FindOne(ctx))
+	})
+
+	server.PUT("/reservations/:id", reservationController.Update)
+
+	server.DELETE("/reservations/:id", reservationController.Delete)
 
 	//seats
 	server.GET("/seats", func(ctx *gin.Context) {
@@ -103,6 +135,14 @@ func main() {
 		ctx.JSON(200, seatController.Save(ctx))
 	})
 
+	server.GET("/seats/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, seatController.FindOne(ctx))
+	})
+
+	server.PUT("/seats/:id", seatController.Update)
+
+	server.DELETE("/seats/:id", seatController.Delete)
+
 	//ratings
 	server.GET("/ratings", func(ctx *gin.Context) {
 		ctx.JSON(200, ratingController.FindAll())
@@ -112,11 +152,13 @@ func main() {
 		ctx.JSON(200, ratingController.Save(ctx))
 	})
 
-	server.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "pong",
-		})
+	server.GET("/ratings/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, ratingController.FindOne(ctx))
 	})
+
+	server.PUT("/ratings/:id", ratingController.Update)
+
+	server.DELETE("/ratings/:id", ratingController.Delete)
 
 	server.Run()
 }
