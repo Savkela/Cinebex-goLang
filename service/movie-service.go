@@ -9,6 +9,8 @@ type MovieService interface {
 	Save(entity.Movie) entity.Movie
 	FindAll() []entity.Movie
 	FindOne(id string) entity.Movie
+	Update(id string, user entity.Movie) (entity.Movie, error)
+	Delete(id string) error
 }
 
 type movieService struct {
@@ -34,4 +36,28 @@ func (service *movieService) FindAll() []entity.Movie {
 	var movies []entity.Movie
 	initializers.DB.Find(&movies)
 	return movies
+}
+
+func (service *movieService) Update(id string, movie entity.Movie) (entity.Movie, error) {
+	var movieToUpdate entity.Movie
+	err := initializers.DB.First(&movieToUpdate, id).Error
+	if err != nil {
+		return movieToUpdate, err
+	}
+
+	err = initializers.DB.Model(&movieToUpdate).Updates(movie).Error
+	if err != nil {
+		return movieToUpdate, err
+	}
+
+	return movieToUpdate, nil
+}
+
+func (service *movieService) Delete(id string) error {
+	var movie entity.Movie
+	result := initializers.DB.Delete(&movie, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

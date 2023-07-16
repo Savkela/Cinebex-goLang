@@ -4,6 +4,7 @@ import (
 	"cinebex/entity"
 	"cinebex/initializers"
 	"cinebex/service"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,8 @@ type ProjectionController interface {
 	Save(ctx *gin.Context) entity.Projection
 	FindAll() []entity.Projection
 	FindOne(ctx *gin.Context) entity.Projection
+	Update(ctx *gin.Context)
+	Delete(ctx *gin.Context)
 }
 
 type projectionController struct {
@@ -44,4 +47,34 @@ func (c *projectionController) Save(ctx *gin.Context) entity.Projection {
 		return projection
 	}
 	return projection
+}
+
+func (c *projectionController) Update(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	var projection entity.Projection
+	if err := ctx.BindJSON(&projection); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Nonsense JSON request"})
+		return
+	}
+
+	updatedProjection, err := c.service.Update(id, projection)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "The Projection is not found"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updatedProjection)
+}
+
+func (c *projectionController) Delete(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	err := c.service.Delete(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Projection not found or error deleting"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "The Projection was successfully deleted"})
 }

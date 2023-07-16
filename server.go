@@ -72,6 +72,10 @@ func main() {
 		ctx.JSON(200, userController.FindOne(ctx))
 	})
 
+	server.PUT("/users/:id", userController.Update)
+
+	server.DELETE("/users/:id", userController.Delete)
+
 	//genres
 	server.GET("/genres", func(ctx *gin.Context) {
 		ctx.JSON(200, genreController.FindAll())
