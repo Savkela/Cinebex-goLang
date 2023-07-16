@@ -2,6 +2,7 @@ package controller
 
 import (
 	"cinebex/entity"
+	"cinebex/initializers"
 	"cinebex/service"
 
 	"github.com/gin-gonic/gin"
@@ -30,5 +31,11 @@ func (c *reservationController) Save(ctx *gin.Context) entity.Reservation {
 	var reservation entity.Reservation
 	ctx.BindJSON(&reservation)
 	c.service.Save(reservation)
+	result := initializers.DB.Create(&reservation)
+
+	if result.Error != nil {
+		ctx.Status(400)
+		return reservation
+	}
 	return reservation
 }

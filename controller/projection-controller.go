@@ -2,6 +2,7 @@ package controller
 
 import (
 	"cinebex/entity"
+	"cinebex/initializers"
 	"cinebex/service"
 
 	"github.com/gin-gonic/gin"
@@ -30,5 +31,11 @@ func (c *projectionController) Save(ctx *gin.Context) entity.Projection {
 	var projection entity.Projection
 	ctx.BindJSON(&projection)
 	c.service.Save(projection)
+	result := initializers.DB.Create(&projection)
+
+	if result.Error != nil {
+		ctx.Status(400)
+		return projection
+	}
 	return projection
 }

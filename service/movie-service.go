@@ -1,6 +1,9 @@
 package service
 
-import "cinebex/entity"
+import (
+	"cinebex/entity"
+	"cinebex/initializers"
+)
 
 type MovieService interface {
 	Save(entity.Movie) entity.Movie
@@ -21,10 +24,7 @@ func (service *movieService) Save(movie entity.Movie) entity.Movie {
 }
 
 func (service *movieService) FindAll() []entity.Movie {
-	return service.movies
+	var movies []entity.Movie
+	initializers.DB.Find(&movies)
+	return movies
 }
-
-// func (service *movieService) Delete(movie entity.Movie) entity.Movie {
-// 	service.movies = delete(movie)
-// 	return movie
-// }

@@ -1,7 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Rating struct {
-	ID            int64 `json:"id"`
+	gorm.Model
 	ReservationId int64 `json:"reservationId"`
 	Rating        int64 `json:"rating"`
 }

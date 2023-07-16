@@ -1,9 +1,13 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Projection struct {
-	ID                  int64         `json:"id"`
+	gorm.Model
 	MovieId             int64         `json:"movie" binding:"required"`
 	Date                time.Time     `json:"date"`
 	Time                time.Time     `json:"time"`

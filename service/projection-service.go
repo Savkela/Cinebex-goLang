@@ -1,6 +1,9 @@
 package service
 
-import "cinebex/entity"
+import (
+	"cinebex/entity"
+	"cinebex/initializers"
+)
 
 type ProjectionService interface {
 	Save(entity.Projection) entity.Projection
@@ -21,5 +24,7 @@ func (service *projectionService) Save(projection entity.Projection) entity.Proj
 }
 
 func (service *projectionService) FindAll() []entity.Projection {
-	return service.projections
+	var projections []entity.Projection
+	initializers.DB.Find(&projections)
+	return projections
 }

@@ -1,7 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Reservation struct {
-	ID             int64    `json:"id"`
+	gorm.Model
 	ProjectionId   int64    `json:"projectionId"`
 	UserId         int64    `json:"userId"`
 	TicketQuantity int64    `json:"ticketQuantity"`
