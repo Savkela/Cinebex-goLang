@@ -8,6 +8,7 @@ import (
 type GenreService interface {
 	Save(entity.Genre) entity.Genre
 	FindAll() []entity.Genre
+	FindOne(id string) entity.Genre
 }
 
 type genreService struct {
@@ -20,6 +21,12 @@ func NewGenreService() GenreService {
 
 func (service *genreService) Save(genre entity.Genre) entity.Genre {
 	service.genres = append(service.genres, genre)
+	return genre
+}
+
+func (service *genreService) FindOne(id string) entity.Genre {
+	var genre entity.Genre
+	initializers.DB.First(&genre, id)
 	return genre
 }
 

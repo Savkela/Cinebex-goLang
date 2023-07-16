@@ -11,6 +11,7 @@ import (
 type ProjectionController interface {
 	Save(ctx *gin.Context) entity.Projection
 	FindAll() []entity.Projection
+	FindOne(ctx *gin.Context) entity.Projection
 }
 
 type projectionController struct {
@@ -25,6 +26,11 @@ func NewProjectionController(service service.ProjectionService) ProjectionContro
 
 func (c *projectionController) FindAll() []entity.Projection {
 	return c.service.FindAll()
+}
+
+func (c *projectionController) FindOne(ctx *gin.Context) entity.Projection {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *projectionController) Save(ctx *gin.Context) entity.Projection {

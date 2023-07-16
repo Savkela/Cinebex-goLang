@@ -11,6 +11,7 @@ import (
 type ReservationController interface {
 	Save(ctx *gin.Context) entity.Reservation
 	FindAll() []entity.Reservation
+	FindOne(ctx *gin.Context) entity.Reservation
 }
 
 type reservationController struct {
@@ -25,6 +26,11 @@ func NewReservationController(service service.ReservationService) ReservationCon
 
 func (c *reservationController) FindAll() []entity.Reservation {
 	return c.service.FindAll()
+}
+
+func (c *reservationController) FindOne(ctx *gin.Context) entity.Reservation {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *reservationController) Save(ctx *gin.Context) entity.Reservation {

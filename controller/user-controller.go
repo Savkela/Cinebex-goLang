@@ -11,6 +11,7 @@ import (
 type UserController interface {
 	Save(ctx *gin.Context) entity.User
 	FindAll() []entity.User
+	FindOne(ctx *gin.Context) entity.User
 }
 
 type userController struct {
@@ -25,6 +26,10 @@ func NewUserController(service service.UserService) UserController {
 
 func (c *userController) FindAll() []entity.User {
 	return c.service.FindAll()
+}
+func (c *userController) FindOne(ctx *gin.Context) entity.User {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *userController) Save(ctx *gin.Context) entity.User {

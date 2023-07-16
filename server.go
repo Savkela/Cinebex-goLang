@@ -68,6 +68,10 @@ func main() {
 		ctx.JSON(200, userController.Save(ctx))
 	})
 
+	server.GET("/users/:id", func(ctx *gin.Context) {
+		ctx.JSON(200, userController.FindOne(ctx))
+	})
+
 	//genres
 	server.GET("/genres", func(ctx *gin.Context) {
 		ctx.JSON(200, genreController.FindAll())

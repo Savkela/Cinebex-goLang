@@ -11,6 +11,7 @@ import (
 type SeatController interface {
 	Save(ctx *gin.Context) entity.Seat
 	FindAll() []entity.Seat
+	FindOne(ctx *gin.Context) entity.Seat
 }
 
 type seatController struct {
@@ -25,6 +26,11 @@ func NewSeatController(service service.SeatService) SeatController {
 
 func (c *seatController) FindAll() []entity.Seat {
 	return c.service.FindAll()
+}
+
+func (c *seatController) FindOne(ctx *gin.Context) entity.Seat {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *seatController) Save(ctx *gin.Context) entity.Seat {
