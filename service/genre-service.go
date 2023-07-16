@@ -1,6 +1,9 @@
 package service
 
-import "cinebex/entity"
+import (
+	"cinebex/entity"
+	"cinebex/initializers"
+)
 
 type GenreService interface {
 	Save(entity.Genre) entity.Genre
@@ -21,5 +24,7 @@ func (service *genreService) Save(genre entity.Genre) entity.Genre {
 }
 
 func (service *genreService) FindAll() []entity.Genre {
-	return service.genres
+	var genres []entity.Genre
+	initializers.DB.Find(&genres)
+	return genres
 }

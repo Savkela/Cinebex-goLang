@@ -1,6 +1,9 @@
 package service
 
-import "cinebex/entity"
+import (
+	"cinebex/entity"
+	"cinebex/initializers"
+)
 
 type ReservationService interface {
 	Save(entity.Reservation) entity.Reservation
@@ -21,5 +24,7 @@ func (service *reservationService) Save(reservation entity.Reservation) entity.R
 }
 
 func (service *reservationService) FindAll() []entity.Reservation {
-	return service.reservations
+	var reservations []entity.Reservation
+	initializers.DB.Find(&reservations)
+	return reservations
 }

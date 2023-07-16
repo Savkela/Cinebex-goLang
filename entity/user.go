@@ -1,6 +1,10 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Role string
 
@@ -10,7 +14,7 @@ const (
 )
 
 type User struct {
-	ID                  int64         `json:"id"`
+	gorm.Model
 	Name                string        `json:"name"`
 	DateOfBirth         time.Time     `json:"dateOfBirth"`
 	Email               string        `json:"email"`

@@ -1,7 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Genre struct {
-	ID     int64   `json:"id"`
+	gorm.Model
 	Name   string  `json:"name"`
 	Movies []Movie `json:"movies"`
 }

@@ -1,6 +1,9 @@
 package service
 
-import "cinebex/entity"
+import (
+	"cinebex/entity"
+	"cinebex/initializers"
+)
 
 type SeatService interface {
 	Save(entity.Seat) entity.Seat
@@ -21,5 +24,7 @@ func (service *seatService) Save(seat entity.Seat) entity.Seat {
 }
 
 func (service *seatService) FindAll() []entity.Seat {
-	return service.seats
+	var seats []entity.Seat
+	initializers.DB.Find(&seats)
+	return seats
 }

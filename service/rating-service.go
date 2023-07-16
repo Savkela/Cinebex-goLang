@@ -1,6 +1,9 @@
 package service
 
-import "cinebex/entity"
+import (
+	"cinebex/entity"
+	"cinebex/initializers"
+)
 
 type RatingService interface {
 	Save(entity.Rating) entity.Rating
@@ -21,5 +24,7 @@ func (service *ratingService) Save(rating entity.Rating) entity.Rating {
 }
 
 func (service *ratingService) FindAll() []entity.Rating {
-	return service.ratings
+	var ratings []entity.Rating
+	initializers.DB.Find(&ratings)
+	return ratings
 }

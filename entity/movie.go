@@ -1,7 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Movie struct {
-	ID            int64  `json:"id"`
+	gorm.Model
 	Title         string `json:"title"`
 	OriginalTitle string `json:"originalTitle"`
 	Duration      string `json:"duration"`
