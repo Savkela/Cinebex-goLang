@@ -9,6 +9,8 @@ type RatingService interface {
 	Save(entity.Rating) entity.Rating
 	FindOne(id string) entity.Rating
 	FindAll() []entity.Rating
+	Update(id string, rating entity.Rating) (entity.Rating, error)
+	Delete(id string) error
 }
 
 type ratingService struct {
@@ -34,4 +36,28 @@ func (service *ratingService) FindAll() []entity.Rating {
 	var ratings []entity.Rating
 	initializers.DB.Find(&ratings)
 	return ratings
+}
+
+func (service *ratingService) Update(id string, rating entity.Rating) (entity.Rating, error) {
+	var ratingToUpdate entity.Rating
+	err := initializers.DB.First(&ratingToUpdate, id).Error
+	if err != nil {
+		return ratingToUpdate, err
+	}
+
+	err = initializers.DB.Model(&ratingToUpdate).Updates(rating).Error
+	if err != nil {
+		return ratingToUpdate, err
+	}
+
+	return ratingToUpdate, nil
+}
+
+func (service *ratingService) Delete(id string) error {
+	var rating entity.Rating
+	result := initializers.DB.Delete(&rating, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

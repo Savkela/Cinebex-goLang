@@ -4,6 +4,7 @@ import (
 	"cinebex/entity"
 	"cinebex/initializers"
 	"cinebex/service"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,8 @@ type MovieController interface {
 	Save(ctx *gin.Context) entity.Movie
 	FindAll() []entity.Movie
 	FindOne(ctx *gin.Context) entity.Movie
+	Update(ctx *gin.Context)
+	Delete(ctx *gin.Context)
 }
 
 type controller struct {
@@ -44,4 +47,34 @@ func (c *controller) Save(ctx *gin.Context) entity.Movie {
 		return movie
 	}
 	return movie
+}
+
+func (c *controller) Update(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	var movie entity.Movie
+	if err := ctx.BindJSON(&movie); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Nonsense JSON request"})
+		return
+	}
+
+	updatedMovie, err := c.service.Update(id, movie)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "The Movie is not found"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updatedMovie)
+}
+
+func (c *controller) Delete(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	err := c.service.Delete(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Movie not found or error deleting"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "The Movie was successfully deleted"})
 }

@@ -11,5 +11,5 @@ func init() {
 }
 
 func main() {
-	initializers.DB.AutoMigrate(&entity.User{})
+	initializers.DB.AutoMigrate(&entity.User{}, &entity.Genre{}, &entity.Movie{}, &entity.Projection{}, &entity.Rating{}, &entity.Reservation{}, &entity.Seat{}, &entity.Genre{})
 }
