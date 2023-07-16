@@ -8,6 +8,7 @@ import (
 type ReservationService interface {
 	Save(entity.Reservation) entity.Reservation
 	FindAll() []entity.Reservation
+	FindOne(id string) entity.Reservation
 }
 
 type reservationService struct {
@@ -20,6 +21,12 @@ func NewReservationService() ReservationService {
 
 func (service *reservationService) Save(reservation entity.Reservation) entity.Reservation {
 	service.reservations = append(service.reservations, reservation)
+	return reservation
+}
+
+func (service *reservationService) FindOne(id string) entity.Reservation {
+	var reservation entity.Reservation
+	initializers.DB.First(&reservation, id)
 	return reservation
 }
 

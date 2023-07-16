@@ -8,6 +8,7 @@ import (
 type UserService interface {
 	Save(entity.User) entity.User
 	FindAll() []entity.User
+	FindOne(id string) entity.User
 }
 
 type userService struct {
@@ -20,6 +21,11 @@ func NewUserService() UserService {
 
 func (service *userService) Save(user entity.User) entity.User {
 	service.users = append(service.users, user)
+	return user
+}
+func (service *userService) FindOne(id string) entity.User {
+	var user entity.User
+	initializers.DB.First(&user, id)
 	return user
 }
 

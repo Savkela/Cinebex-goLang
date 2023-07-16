@@ -11,6 +11,7 @@ import (
 type GenreController interface {
 	Save(ctx *gin.Context) entity.Genre
 	FindAll() []entity.Genre
+	FindOne(ctx *gin.Context) entity.Genre
 }
 
 type genreController struct {
@@ -25,6 +26,11 @@ func NewGenreController(service service.GenreService) GenreController {
 
 func (c *genreController) FindAll() []entity.Genre {
 	return c.service.FindAll()
+}
+
+func (c *genreController) FindOne(ctx *gin.Context) entity.Genre {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *genreController) Save(ctx *gin.Context) entity.Genre {

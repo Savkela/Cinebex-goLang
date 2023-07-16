@@ -11,6 +11,7 @@ import (
 type RatingController interface {
 	Save(ctx *gin.Context) entity.Rating
 	FindAll() []entity.Rating
+	FindOne(ctx *gin.Context) entity.Rating
 }
 
 type ratingController struct {
@@ -25,6 +26,11 @@ func NewRatingController(service service.RatingService) RatingController {
 
 func (c *ratingController) FindAll() []entity.Rating {
 	return c.service.FindAll()
+}
+
+func (c *ratingController) FindOne(ctx *gin.Context) entity.Rating {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *ratingController) Save(ctx *gin.Context) entity.Rating {

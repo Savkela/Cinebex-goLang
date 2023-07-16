@@ -7,6 +7,7 @@ import (
 
 type RatingService interface {
 	Save(entity.Rating) entity.Rating
+	FindOne(id string) entity.Rating
 	FindAll() []entity.Rating
 }
 
@@ -20,6 +21,12 @@ func NewRatingService() RatingService {
 
 func (service *ratingService) Save(rating entity.Rating) entity.Rating {
 	service.ratings = append(service.ratings, rating)
+	return rating
+}
+
+func (service *ratingService) FindOne(id string) entity.Rating {
+	var rating entity.Rating
+	initializers.DB.First(&rating, id)
 	return rating
 }
 

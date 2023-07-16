@@ -8,6 +8,7 @@ import (
 type ProjectionService interface {
 	Save(entity.Projection) entity.Projection
 	FindAll() []entity.Projection
+	FindOne(id string) entity.Projection
 }
 
 type projectionService struct {
@@ -20,6 +21,12 @@ func NewProjectionService() ProjectionService {
 
 func (service *projectionService) Save(projection entity.Projection) entity.Projection {
 	service.projections = append(service.projections, projection)
+	return projection
+}
+
+func (service *projectionService) FindOne(id string) entity.Projection {
+	var projection entity.Projection
+	initializers.DB.First(&projection, id)
 	return projection
 }
 

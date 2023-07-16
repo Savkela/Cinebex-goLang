@@ -7,6 +7,7 @@ import (
 
 type SeatService interface {
 	Save(entity.Seat) entity.Seat
+	FindOne(id string) entity.Seat
 	FindAll() []entity.Seat
 }
 
@@ -20,6 +21,11 @@ func NewSeatService() SeatService {
 
 func (service *seatService) Save(seat entity.Seat) entity.Seat {
 	service.seats = append(service.seats, seat)
+	return seat
+}
+func (service *seatService) FindOne(id string) entity.Seat {
+	var seat entity.Seat
+	initializers.DB.First(&seat, id)
 	return seat
 }
 

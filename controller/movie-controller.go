@@ -11,6 +11,7 @@ import (
 type MovieController interface {
 	Save(ctx *gin.Context) entity.Movie
 	FindAll() []entity.Movie
+	FindOne(ctx *gin.Context) entity.Movie
 }
 
 type controller struct {
@@ -25,6 +26,11 @@ func New(service service.MovieService) MovieController {
 
 func (c *controller) FindAll() []entity.Movie {
 	return c.service.FindAll()
+}
+
+func (c *controller) FindOne(ctx *gin.Context) entity.Movie {
+	id := ctx.Param("id")
+	return c.service.FindOne(id)
 }
 
 func (c *controller) Save(ctx *gin.Context) entity.Movie {
