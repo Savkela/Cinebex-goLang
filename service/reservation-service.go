@@ -3,12 +3,15 @@ package service
 import (
 	"cinebex/entity"
 	"cinebex/initializers"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type ReservationService interface {
-	Save(entity.Reservation) entity.Reservation
+	Save(reservation entity.Reservation) error
 	FindAll() []entity.Reservation
-	FindOne(id string) entity.Reservation
+	FindOne(id string) (entity.Reservation, error)
 	Update(id string, reservation entity.Reservation) (entity.Reservation, error)
 	Delete(id string) error
 }
@@ -21,15 +24,25 @@ func NewReservationService() ReservationService {
 	return &reservationService{}
 }
 
-func (service *reservationService) Save(reservation entity.Reservation) entity.Reservation {
-	service.reservations = append(service.reservations, reservation)
-	return reservation
+func (service *reservationService) Save(reservation entity.Reservation) error {
+	err := initializers.DB.Create(&reservation).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (service *reservationService) FindOne(id string) entity.Reservation {
+func (service *reservationService) FindOne(id string) (entity.Reservation, error) {
 	var reservation entity.Reservation
-	initializers.DB.First(&reservation, id)
-	return reservation
+	result := initializers.DB.First(&reservation, "id = ?", id)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return reservation, errors.New("Reservation not found")
+		}
+		return reservation, result.Error
+	}
+
+	return reservation, nil
 }
 
 func (service *reservationService) FindAll() []entity.Reservation {

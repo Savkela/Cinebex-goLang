@@ -2,7 +2,6 @@ package controller
 
 import (
 	"cinebex/entity"
-	"cinebex/initializers"
 	"cinebex/service"
 	"net/http"
 
@@ -10,9 +9,9 @@ import (
 )
 
 type RatingController interface {
-	Save(ctx *gin.Context) entity.Rating
+	Save(ctx *gin.Context)
 	FindAll() []entity.Rating
-	FindOne(ctx *gin.Context) entity.Rating
+	FindOne(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 }
@@ -31,22 +30,31 @@ func (c *ratingController) FindAll() []entity.Rating {
 	return c.service.FindAll()
 }
 
-func (c *ratingController) FindOne(ctx *gin.Context) entity.Rating {
+func (c *ratingController) FindOne(ctx *gin.Context) {
 	id := ctx.Param("id")
-	return c.service.FindOne(id)
+	rating, err := c.service.FindOne(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, rating)
 }
 
-func (c *ratingController) Save(ctx *gin.Context) entity.Rating {
+func (c *ratingController) Save(ctx *gin.Context) {
 	var rating entity.Rating
-	ctx.BindJSON(&rating)
-	c.service.Save(rating)
-	result := initializers.DB.Create(&rating)
-
-	if result.Error != nil {
-		ctx.Status(400)
-		return rating
+	if err := ctx.BindJSON(&rating); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		return
 	}
-	return rating
+
+	err := c.service.Save(rating)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save rating"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, rating)
 }
 
 func (c *ratingController) Update(ctx *gin.Context) {

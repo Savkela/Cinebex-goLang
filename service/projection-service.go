@@ -3,13 +3,16 @@ package service
 import (
 	"cinebex/entity"
 	"cinebex/initializers"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type ProjectionService interface {
-	Save(entity.Projection) entity.Projection
+	Save(projection entity.Projection) error
 	FindAll() []entity.Projection
-	FindOne(id string) entity.Projection
-	Update(id string, user entity.Projection) (entity.Projection, error)
+	FindOne(id string) (entity.Projection, error)
+	Update(id string, Projection entity.Projection) (entity.Projection, error)
 	Delete(id string) error
 }
 
@@ -21,15 +24,25 @@ func NewProjectionService() ProjectionService {
 	return &projectionService{}
 }
 
-func (service *projectionService) Save(projection entity.Projection) entity.Projection {
-	service.projections = append(service.projections, projection)
-	return projection
+func (service *projectionService) Save(projection entity.Projection) error {
+	err := initializers.DB.Create(&projection).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (service *projectionService) FindOne(id string) entity.Projection {
+func (service *projectionService) FindOne(id string) (entity.Projection, error) {
 	var projection entity.Projection
-	initializers.DB.First(&projection, id)
-	return projection
+	result := initializers.DB.First(&projection, "id = ?", id)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return projection, errors.New("Projection not found")
+		}
+		return projection, result.Error
+	}
+
+	return projection, nil
 }
 
 func (service *projectionService) FindAll() []entity.Projection {
