@@ -2,7 +2,6 @@ package controller
 
 import (
 	"cinebex/entity"
-	"cinebex/initializers"
 	"cinebex/service"
 	"net/http"
 
@@ -10,9 +9,9 @@ import (
 )
 
 type SeatController interface {
-	Save(ctx *gin.Context) entity.Seat
+	Save(ctx *gin.Context)
 	FindAll() []entity.Seat
-	FindOne(ctx *gin.Context) entity.Seat
+	FindOne(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 }
@@ -31,22 +30,31 @@ func (c *seatController) FindAll() []entity.Seat {
 	return c.service.FindAll()
 }
 
-func (c *seatController) FindOne(ctx *gin.Context) entity.Seat {
+func (c *seatController) FindOne(ctx *gin.Context) {
 	id := ctx.Param("id")
-	return c.service.FindOne(id)
+	seat, err := c.service.FindOne(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, seat)
 }
 
-func (c *seatController) Save(ctx *gin.Context) entity.Seat {
+func (c *seatController) Save(ctx *gin.Context) {
 	var seat entity.Seat
-	ctx.BindJSON(&seat)
-	c.service.Save(seat)
-	result := initializers.DB.Create(&seat)
-
-	if result.Error != nil {
-		ctx.Status(400)
-		return seat
+	if err := ctx.BindJSON(&seat); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		return
 	}
-	return seat
+
+	err := c.service.Save(seat)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save seat"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, seat)
 }
 
 func (c *seatController) Update(ctx *gin.Context) {

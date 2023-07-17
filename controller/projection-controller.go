@@ -2,7 +2,6 @@ package controller
 
 import (
 	"cinebex/entity"
-	"cinebex/initializers"
 	"cinebex/service"
 	"net/http"
 
@@ -10,9 +9,9 @@ import (
 )
 
 type ProjectionController interface {
-	Save(ctx *gin.Context) entity.Projection
+	Save(ctx *gin.Context)
 	FindAll() []entity.Projection
-	FindOne(ctx *gin.Context) entity.Projection
+	FindOne(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 }
@@ -31,22 +30,31 @@ func (c *projectionController) FindAll() []entity.Projection {
 	return c.service.FindAll()
 }
 
-func (c *projectionController) FindOne(ctx *gin.Context) entity.Projection {
+func (c *projectionController) FindOne(ctx *gin.Context) {
 	id := ctx.Param("id")
-	return c.service.FindOne(id)
+	projection, err := c.service.FindOne(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, projection)
 }
 
-func (c *projectionController) Save(ctx *gin.Context) entity.Projection {
+func (c *projectionController) Save(ctx *gin.Context) {
 	var projection entity.Projection
-	ctx.BindJSON(&projection)
-	c.service.Save(projection)
-	result := initializers.DB.Create(&projection)
-
-	if result.Error != nil {
-		ctx.Status(400)
-		return projection
+	if err := ctx.BindJSON(&projection); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		return
 	}
-	return projection
+
+	err := c.service.Save(projection)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save projection"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, projection)
 }
 
 func (c *projectionController) Update(ctx *gin.Context) {

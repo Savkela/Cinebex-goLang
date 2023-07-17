@@ -3,11 +3,14 @@ package service
 import (
 	"cinebex/entity"
 	"cinebex/initializers"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type RatingService interface {
-	Save(entity.Rating) entity.Rating
-	FindOne(id string) entity.Rating
+	Save(rating entity.Rating) error
+	FindOne(id string) (entity.Rating, error)
 	FindAll() []entity.Rating
 	Update(id string, rating entity.Rating) (entity.Rating, error)
 	Delete(id string) error
@@ -21,15 +24,25 @@ func NewRatingService() RatingService {
 	return &ratingService{}
 }
 
-func (service *ratingService) Save(rating entity.Rating) entity.Rating {
-	service.ratings = append(service.ratings, rating)
-	return rating
+func (service *ratingService) Save(rating entity.Rating) error {
+	err := initializers.DB.Create(&rating).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (service *ratingService) FindOne(id string) entity.Rating {
+func (service *ratingService) FindOne(id string) (entity.Rating, error) {
 	var rating entity.Rating
-	initializers.DB.First(&rating, id)
-	return rating
+	result := initializers.DB.First(&rating, "id = ?", id)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return rating, errors.New("Rating not found")
+		}
+		return rating, result.Error
+	}
+
+	return rating, nil
 }
 
 func (service *ratingService) FindAll() []entity.Rating {

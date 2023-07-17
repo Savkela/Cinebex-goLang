@@ -2,7 +2,6 @@ package controller
 
 import (
 	"cinebex/entity"
-	"cinebex/initializers"
 	"cinebex/service"
 	"net/http"
 
@@ -10,9 +9,9 @@ import (
 )
 
 type MovieController interface {
-	Save(ctx *gin.Context) entity.Movie
+	Save(ctx *gin.Context)
 	FindAll() []entity.Movie
-	FindOne(ctx *gin.Context) entity.Movie
+	FindOne(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 }
@@ -31,22 +30,31 @@ func (c *controller) FindAll() []entity.Movie {
 	return c.service.FindAll()
 }
 
-func (c *controller) FindOne(ctx *gin.Context) entity.Movie {
+func (c *controller) FindOne(ctx *gin.Context) {
 	id := ctx.Param("id")
-	return c.service.FindOne(id)
+	movie, err := c.service.FindOne(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, movie)
 }
 
-func (c *controller) Save(ctx *gin.Context) entity.Movie {
+func (c *controller) Save(ctx *gin.Context) {
 	var movie entity.Movie
-	ctx.ShouldBindJSON(&movie)
-	c.service.Save(movie)
-	result := initializers.DB.Create(&movie)
-
-	if result.Error != nil {
-		ctx.Status(400)
-		return movie
+	if err := ctx.BindJSON(&movie); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		return
 	}
-	return movie
+
+	err := c.service.Save(movie)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save movie"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, movie)
 }
 
 func (c *controller) Update(ctx *gin.Context) {

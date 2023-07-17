@@ -3,11 +3,14 @@ package service
 import (
 	"cinebex/entity"
 	"cinebex/initializers"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type SeatService interface {
-	Save(entity.Seat) entity.Seat
-	FindOne(id string) entity.Seat
+	Save(seat entity.Seat) error
+	FindOne(id string) (entity.Seat, error)
 	FindAll() []entity.Seat
 	Update(id string, seat entity.Seat) (entity.Seat, error)
 	Delete(id string) error
@@ -21,15 +24,25 @@ func NewSeatService() SeatService {
 	return &seatService{}
 }
 
-func (service *seatService) Save(seat entity.Seat) entity.Seat {
-	service.seats = append(service.seats, seat)
-	return seat
+func (service *seatService) Save(seat entity.Seat) error {
+	err := initializers.DB.Create(&seat).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (service *seatService) FindOne(id string) entity.Seat {
+func (service *seatService) FindOne(id string) (entity.Seat, error) {
 	var seat entity.Seat
-	initializers.DB.First(&seat, id)
-	return seat
+	result := initializers.DB.First(&seat, "id = ?", id)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return seat, errors.New("Seat not found")
+		}
+		return seat, result.Error
+	}
+
+	return seat, nil
 }
 
 func (service *seatService) FindAll() []entity.Seat {

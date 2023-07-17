@@ -2,7 +2,6 @@ package controller
 
 import (
 	"cinebex/entity"
-	"cinebex/initializers"
 	"cinebex/service"
 	"net/http"
 
@@ -10,9 +9,9 @@ import (
 )
 
 type GenreController interface {
-	Save(ctx *gin.Context) entity.Genre
+	Save(ctx *gin.Context)
 	FindAll() []entity.Genre
-	FindOne(ctx *gin.Context) entity.Genre
+	FindOne(ctx *gin.Context)
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 }
@@ -31,22 +30,31 @@ func (c *genreController) FindAll() []entity.Genre {
 	return c.service.FindAll()
 }
 
-func (c *genreController) FindOne(ctx *gin.Context) entity.Genre {
+func (c *genreController) FindOne(ctx *gin.Context) {
 	id := ctx.Param("id")
-	return c.service.FindOne(id)
+	genre, err := c.service.FindOne(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, genre)
 }
 
-func (c *genreController) Save(ctx *gin.Context) entity.Genre {
+func (c *genreController) Save(ctx *gin.Context) {
 	var genre entity.Genre
-	ctx.BindJSON(&genre)
-	c.service.Save(genre)
-	result := initializers.DB.Create(&genre)
-
-	if result.Error != nil {
-		ctx.Status(400)
-		return genre
+	if err := ctx.BindJSON(&genre); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		return
 	}
-	return genre
+
+	err := c.service.Save(genre)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save genre"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, genre)
 }
 
 func (c *genreController) Update(ctx *gin.Context) {

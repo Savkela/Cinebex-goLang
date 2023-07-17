@@ -46,13 +46,9 @@ func main() {
 		ctx.JSON(200, movieController.FindAll())
 	})
 
-	server.POST("/movies", func(ctx *gin.Context) {
-		ctx.JSON(200, movieController.Save(ctx))
-	})
+	server.POST("/movies", movieController.Save)
 
-	server.GET("/movies/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, movieController.FindOne(ctx))
-	})
+	server.GET("/movies/:id", movieController.FindOne)
 
 	server.PUT("/movies/:id", movieController.Update)
 
@@ -63,13 +59,9 @@ func main() {
 		ctx.JSON(200, projectionController.FindAll())
 	})
 
-	server.POST("/projections", func(ctx *gin.Context) {
-		ctx.JSON(200, projectionController.Save(ctx))
-	})
+	server.POST("/projections", projectionController.Save)
 
-	server.GET("/projections/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, projectionController.FindOne(ctx))
-	})
+	server.GET("/projections/:id", projectionController.FindOne)
 
 	server.PUT("/projections/:id", projectionController.Update)
 
@@ -80,13 +72,9 @@ func main() {
 		ctx.JSON(200, userController.FindAll())
 	})
 
-	server.POST("/users", func(ctx *gin.Context) {
-		ctx.JSON(200, userController.Save(ctx))
-	})
+	server.POST("/users", userController.Save)
 
-	server.GET("/users/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, userController.FindOne(ctx))
-	})
+	server.GET("/users/:id", userController.FindOne)
 
 	server.PUT("/users/:id", userController.Update)
 
@@ -97,13 +85,9 @@ func main() {
 		ctx.JSON(200, genreController.FindAll())
 	})
 
-	server.POST("/genres", func(ctx *gin.Context) {
-		ctx.JSON(200, genreController.Save(ctx))
-	})
+	server.POST("/genres", genreController.Save)
 
-	server.GET("/genres/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, genreController.FindOne(ctx))
-	})
+	server.GET("/genres/:id", genreController.FindOne)
 
 	server.PUT("/genres/:id", genreController.Update)
 
@@ -114,13 +98,9 @@ func main() {
 		ctx.JSON(200, reservationController.FindAll())
 	})
 
-	server.POST("/reservations", func(ctx *gin.Context) {
-		ctx.JSON(200, reservationController.Save(ctx))
-	})
+	server.POST("/reservations", reservationController.Save)
 
-	server.GET("/reservations/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, reservationController.FindOne(ctx))
-	})
+	server.GET("/reservations/:id", reservationController.FindOne)
 
 	server.PUT("/reservations/:id", reservationController.Update)
 
@@ -131,13 +111,9 @@ func main() {
 		ctx.JSON(200, seatController.FindAll())
 	})
 
-	server.POST("/seats", func(ctx *gin.Context) {
-		ctx.JSON(200, seatController.Save(ctx))
-	})
+	server.POST("/seats", seatController.Save)
 
-	server.GET("/seats/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, seatController.FindOne(ctx))
-	})
+	server.GET("/seats/:id", seatController.FindOne)
 
 	server.PUT("/seats/:id", seatController.Update)
 
@@ -148,13 +124,9 @@ func main() {
 		ctx.JSON(200, ratingController.FindAll())
 	})
 
-	server.POST("/ratings", func(ctx *gin.Context) {
-		ctx.JSON(200, ratingController.Save(ctx))
-	})
+	server.POST("/ratings", ratingController.Save)
 
-	server.GET("/ratings/:id", func(ctx *gin.Context) {
-		ctx.JSON(200, ratingController.FindOne(ctx))
-	})
+	server.GET("/ratings/:id", ratingController.FindOne)
 
 	server.PUT("/ratings/:id", ratingController.Update)
 

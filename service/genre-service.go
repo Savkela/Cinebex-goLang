@@ -3,13 +3,16 @@ package service
 import (
 	"cinebex/entity"
 	"cinebex/initializers"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type GenreService interface {
-	Save(entity.Genre) entity.Genre
+	Save(genre entity.Genre) error
 	FindAll() []entity.Genre
-	FindOne(id string) entity.Genre
-	Update(id string, user entity.Genre) (entity.Genre, error)
+	FindOne(id string) (entity.Genre, error)
+	Update(id string, Genre entity.Genre) (entity.Genre, error)
 	Delete(id string) error
 }
 
@@ -21,15 +24,25 @@ func NewGenreService() GenreService {
 	return &genreService{}
 }
 
-func (service *genreService) Save(genre entity.Genre) entity.Genre {
-	service.genres = append(service.genres, genre)
-	return genre
+func (service *genreService) Save(genre entity.Genre) error {
+	err := initializers.DB.Create(&genre).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (service *genreService) FindOne(id string) entity.Genre {
+func (service *genreService) FindOne(id string) (entity.Genre, error) {
 	var genre entity.Genre
-	initializers.DB.First(&genre, id)
-	return genre
+	result := initializers.DB.First(&genre, "id = ?", id)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return genre, errors.New("Genre not found")
+		}
+		return genre, result.Error
+	}
+
+	return genre, nil
 }
 
 func (service *genreService) FindAll() []entity.Genre {
